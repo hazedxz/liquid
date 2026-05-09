@@ -16,7 +16,7 @@ void EnableLiquidGlass(HWND hwnd) {
         typedef BOOL(WINAPI* pSetAttr)(HWND, WINCOMPATTRDATA*);
         pSetAttr SetAttr = (pSetAttr)GetProcAddress(hUser, "SetWindowCompositionAttribute");
         if (SetAttr) {
-            ACCENTPOLICY policy = { 3, 0, 0x40101010, 0 }; // Cristal oscuro de lujo
+            ACCENTPOLICY policy = { 3, 0, 0x40101010, 0 }; 
             WINCOMPATTRDATA data = { 19, &policy, sizeof(ACCENTPOLICY) };
             SetAttr(hwnd, &data);
         }
@@ -34,7 +34,7 @@ HHOOK keyboardHook = NULL;
 std::vector<HWND> openApps;
 int currentY = 0;
 
-// LOGICA DE TECLADO MEJORADA: Permite combos como Win+R perfectamente
+
 bool winKeyIsDown = false;
 bool otherKeyPressed = false;
 
@@ -48,14 +48,14 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
             } else if (wParam == WM_KEYUP || wParam == WM_SYSKEYUP) {
                 winKeyIsDown = false;
                 if (!otherKeyPressed) {
-                    // Si se presiona Win sola, bloquea el menu original mandando una tecla fantasma y abre el nuestro
+                    
                     keybd_event(VK_F24, 0, 0, 0); keybd_event(VK_F24, 0, KEYEVENTF_KEYUP, 0);
                     ToggleStartMenu();
                     return 1; 
                 }
             }
         } else {
-            if (winKeyIsDown) otherKeyPressed = true; // Se presionó un combo (ej: Win+R)
+            if (winKeyIsDown) otherKeyPressed = true; 
         }
     }
     return CallNextHookEx(keyboardHook, nCode, wParam, lParam);
@@ -80,23 +80,23 @@ LRESULT CALLBACK DockProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
         case WM_TIMER: {
             openApps.clear(); EnumWindows(EnumWindowsProc, 0);
             
-            // LOGICA AUTO-OCULTAR PERFECTA
+           
             POINT pt; GetCursorPos(&pt);
             int sh = GetSystemMetrics(SM_CYSCREEN);
             RECT dockRect; GetWindowRect(hwnd, &dockRect);
             
-            bool mouseAtBottom = (pt.y >= sh - 5); // Raton en el borde inferior de la pantalla
+            bool mouseAtBottom = (pt.y >= sh - 5); 
             bool mouseOnDock = (pt.x >= dockRect.left && pt.x <= dockRect.right && pt.y >= dockRect.top);
-            bool isMenuOpen = isMenuVisible; // Si el menú de inicio está abierto, no ocultar la barra
+            bool isMenuOpen = isMenuVisible; 
             
             int targetY;
             if (mouseAtBottom || mouseOnDock || isMenuOpen) {
-                targetY = sh - 65 - 10; // Arriba
+                targetY = sh - 65 - 10; 
             } else {
-                targetY = sh + 10; // Abajo (Oculto)
+                targetY = sh + 10; 
             }
             
-            // Animacion fluida
+           
             if (currentY != targetY) {
                 currentY += (targetY - currentY) / 4;
                 if (abs(targetY - currentY) < 2) currentY = targetY;
@@ -216,7 +216,7 @@ LRESULT CALLBACK ControlPanelProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
             }
             return 0;
         }
-        case WM_CLOSE: ShowWindow(hwnd, SW_HIDE); return 0; // Se oculta en 2do plano en vez de cerrar
+        case WM_CLOSE: ShowWindow(hwnd, SW_HIDE); return 0; 
         case WM_DESTROY: {
             NOTIFYICONDATAA nid = {0}; nid.cbSize = sizeof(NOTIFYICONDATAA); nid.hWnd = hwnd; nid.uID = TRAY_ICON_ID;
             Shell_NotifyIconA(NIM_DELETE, &nid);
@@ -228,7 +228,7 @@ LRESULT CALLBACK ControlPanelProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nShow) {
-    // EL FIX: Si detecta que ya hay un panel abierto, lo trae al frente y cierra este nuevo
+    
     HWND existingHwnd = FindWindowA("ControlPanelClass", NULL);
     if (existingHwnd) { 
         ShowWindow(existingHwnd, SW_RESTORE); 
