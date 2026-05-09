@@ -3,7 +3,7 @@
 #include <shellapi.h>
 
 extern void EnableLiquidGlass(HWND hwnd);
-extern int dockWidth; // Para alinear con el dock
+extern int dockWidth; 
 
 HWND hwndStartMenu = NULL;
 bool isMenuVisible = false;
@@ -24,7 +24,7 @@ LRESULT CALLBACK StartMenuProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
             TextOutA(hdc, 30, 80, "[ > ] Explorador de Archivos", 28);
             TextOutA(hdc, 30, 120, "[ > ] Navegador Web", 19);
 
-            // Power Options
+           
             SetTextColor(hdc, RGB(255, 50, 50));
             TextOutA(hdc, 20, 420, "(O) Apagar Equipo", 17);
             SetTextColor(hdc, RGB(255, 150, 50));
@@ -36,8 +36,8 @@ LRESULT CALLBACK StartMenuProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
             int y = HIWORD(lParam);
             if (y >= 80 && y <= 110) ShellExecuteA(NULL, "open", "explorer.exe", NULL, NULL, SW_SHOW);
             if (y >= 120 && y <= 150) ShellExecuteA(NULL, "open", "msedge.exe", NULL, NULL, SW_SHOW);
-            if (y >= 420 && y <= 450) system("shutdown /s /t 0"); // Apagar
-            if (y >= 460 && y <= 490) system("shutdown /r /t 0"); // Reiniciar
+            if (y >= 420 && y <= 450) system("shutdown /s /t 0"); 
+            if (y >= 460 && y <= 490) system("shutdown /r /t 0"); 
             return 0;
         }
         case WM_KILLFOCUS:
@@ -51,7 +51,7 @@ void ToggleStartMenu() {
         WNDCLASSA wc = {0}; wc.lpfnWndProc = StartMenuProc; wc.hInstance = GetModuleHandle(NULL); wc.lpszClassName = "StartMenuClass";
         RegisterClassA(&wc);
         int sw = GetSystemMetrics(SM_CXSCREEN); int sh = GetSystemMetrics(SM_CYSCREEN);
-        int startX = (sw - dockWidth) / 2; // Alineado al borde del dock
+        int startX = (sw - dockWidth) / 2; 
         hwndStartMenu = CreateWindowExA(WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_LAYERED,
             "StartMenuClass", "StartMenu", WS_POPUP, startX, sh - 500 - 80, 350, 500, NULL, NULL, GetModuleHandle(NULL), NULL);
         SetLayeredWindowAttributes(hwndStartMenu, 0, 230, LWA_ALPHA);
